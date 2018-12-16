@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="sz.zxl.com.pojo.User">
+	
+	<select id="finduserbyname" parameterType="sz.zxl.com.pojo.User" resultType="sz.zxl.com.pojo.User">
+		select userid,loginname,loginpwd,phone,realname from users where loginname=#{loginname} and loginpwd=#{loginpwd}
+	</select>
+	
+</mapper>

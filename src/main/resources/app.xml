@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 搭建ssm环境:
+		Spring4.3.10 + SpringMVC + Mybatis3.2.3 ;
+		优先配置spring 环境
+		1.spring环境
+			A. pom.xml文件中,配置spring刚需的依赖
+			B. 准备spring配置文件app.xml==>这里引入注解和和组件扫描范围
+			C. 在web.xml 中配置上下文参数并指定配置文件的路径和名字 和spring监听器
+		2.mybatis环境
+			A. pom.xml 文件中准备mybatis依赖(数据库驱动包,mybatis核心开发包,mybatis-spring-1.2.2)
+			B. 准备mybatis 配置文件
+			C.准备数据源:一般吧数据源配置在spring配置文件中,然后由spring通过第三方工具来管理这些数据书院
+				常见的第三方工具:commons-dbcp ; c3p0; druid 德鲁伊(阿里生产的)
+				pom.xml配置文件中 添加commons-dbcp 和Commons-pool 的依赖
+				app.xml文件中,配置BasicDataSource 对象;
+				同时还需要配置连接工厂,并在工厂中引入mybatis的配置文件
+			D. 准备实体类和实体类映射文件;同时需要在mybatis的配置文件中引入映射文件
+		3.SpringMVC的环境
+			A. 引入mvc注解驱动
+			B. 准备视图处理器
+			C. 在web.xml中配置springMVC 的核心对象servlet DispatcherServlert
+ -->
+ 
+ <!-- 引入注解和和组件扫描范围 -->
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="sz.zxl.com"></context:component-scan>
+
+<!-- 数据源  -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" ></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/onessm" ></property>
+		<property name="username" value="root" ></property>
+		<property name="password" value="123456" ></property>
+	</bean>
+	
+<!-- 连接工厂 -->	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" ></property>
+		<property name="configLocation" value="classpath:mybatis_config.xml" ></property>
+	</bean>
+
+<!-- 引入mvc注解驱动 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+<!-- 准备视图处理器 -->	
+	<bean id="irvr" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+<!-- 配置userdao对象 需要注入连接类 -->
+	<bean id="userdao" class="sz.zxl.com.dao.impl.UserDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+<!-- 配置service对象 需要注入dao对象 -->
+	<bean id="userservice" class="sz.zxl.com.service.impl.UserServiceImpl">
+		<property name="userdao" ref="userdao"></property>
+	</bean>
+
+
+</beans>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+
+	<welcome-file-list>
+  		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+ 
+ <!-- spring配置上下文参数,指定配置文件的路径和名字 -->
+ 	<context-param>
+ 		<param-name>contextConfigLocation</param-name>
+ 		<param-value>classpath:app.xml</param-value>
+ 	</context-param>
+ 	
+ <!-- spring监听器 用来监听服务器的启动和停止,当服务器启动时,马上初始化spring容器,并创建必要的对象(ac,datesourse...) -->
+ 	<listener>
+ 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ 	</listener>
+ 	
+ <!-- 配置springmvc核心对象 -->
+ 	<servlet>
+ 		<servlet-name>dispatcherServlet</servlet-name>
+ 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+ 		<init-param>
+ 			<param-name>contextConfigLocation</param-name>
+ 			<param-value>classpath:app.xml</param-value>
+ 		</init-param>
+ 	</servlet>
+ 	<servlet-mapping>
+ 		<servlet-name>dispatcherServlet</servlet-name>
+ 		<url-pattern>/</url-pattern>
+ 	</servlet-mapping>
+ 	
+</web-app>
